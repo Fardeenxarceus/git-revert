@@ -1,3 +1,192 @@
+# Git Revert and Git Reset
+
+This repository is created to understand the difference between the `git revert` and `git reset` commands in Git.
+
+Both commands help us undo changes, but they work differently. Understanding them is important when working on personal projects or collaborating with a team.
+
+## 1. Git Revert
+
+The `git revert` command undoes the changes introduced by a particular commit by creating a **new commit**.
+
+It does not delete the original commit from the commit history. This makes it a safer option when working on shared repositories.
+
+### Syntax
+
+```bash
+git revert <commit-id>
+```
+
+### How to Find a Commit ID
+
+We can find the commit ID on the Code or Commits page of a GitHub repository. We can also find it using these terminal commands:
+
+```bash
+git log
+```
+
+Displays detailed information about previous commits.
+
+```bash
+git log --oneline
+```
+
+Displays commit IDs and commit messages in a shorter format.
+
+### Example
+
+Suppose our commit history looks like this:
+
+```text
+a1b2c3d Add new feature
+e4f5g6h Update homepage
+i7j8k9l Initial commit
+```
+
+If we want to undo the changes introduced by `a1b2c3d`, we can run:
+
+```bash
+git revert a1b2c3d
+```
+
+Git creates a new commit that reverses the changes introduced by that commit.
+
+**Important:** `git revert` does not simply restore the entire repository to an earlier state. It reverses the changes made by the specified commit while preserving subsequent commits, where possible.
+
+If conflicts occur, we must resolve them before completing the revert.
+
+## 2. Git Reset
+
+The `git reset` command moves the current branch's `HEAD` and can change the staging area and working directory, depending on the option we use.
+
+Unlike `git revert`, `git reset` can remove commits from the current branch's visible history.
+
+### Syntax
+
+```bash
+git reset <commit-id>
+```
+
+By default, `git reset` uses the `--mixed` option.
+
+There are three commonly used reset options:
+
+- `--soft`
+- `--mixed`
+- `--hard`
+
+## 3. Git Reset --soft
+
+The `--soft` option moves `HEAD` to the specified commit but keeps the changes from the removed commits **staged**.
+
+This means we can make additional changes or create a new commit without staging the existing changes again.
+
+### Syntax
+
+```bash
+git reset --soft <commit-id>
+```
+
+### Example
+
+```bash
+git reset --soft HEAD~1
+```
+
+This moves `HEAD` back by one commit. The changes introduced by that commit remain staged and ready to commit again.
+
+**Use case:** When we want to undo a commit but keep its changes staged.
+
+## 4. Git Reset --mixed
+
+The `--mixed` option moves `HEAD` to the specified commit and unstages the changes from the commits being removed from the current branch's history.
+
+The changes remain in our working directory, so we can edit them before committing again.
+
+This is the default behavior of `git reset`.
+
+### Syntax
+
+```bash
+git reset --mixed <commit-id>
+```
+
+We can also write:
+
+```bash
+git reset <commit-id>
+```
+
+### Example
+
+```bash
+git reset --mixed HEAD~1
+```
+
+This moves `HEAD` back by one commit. The changes remain in our files, but they are no longer staged.
+
+**Use case:** When we want to undo a commit and edit its changes before making a new commit.
+
+## 5. Git Reset --hard
+
+The `--hard` option moves `HEAD` to the specified commit and resets both the staging area and working directory to match that commit.
+
+**Warning:** Changes in tracked files that are not present in the target commit can be permanently lost.
+
+### Syntax
+
+```bash
+git reset --hard <commit-id>
+```
+
+### Example
+
+```bash
+git reset --hard HEAD~1
+```
+
+This moves `HEAD` back by one commit and discards the changes from that commit in the working directory and staging area.
+
+**Use case:** When we intentionally want to discard changes and return to an earlier state.
+
+Use this command carefully because recovering discarded work may be difficult.
+
+## 6. Difference Between Git Revert and Git Reset
+
+| Feature | `git revert` | `git reset --soft` | `git reset --mixed` | `git reset --hard` |
+|---|---|---|---|---|
+| Creates a new commit | Yes | No | No | No |
+| Moves `HEAD` backward | No | Yes | Yes | Yes |
+| Keeps changes staged | Not applicable | Yes | No | No |
+| Keeps changes in working directory | Reverses specified changes | Yes | Yes | No |
+| Can rewrite branch history | No | Yes | Yes | Yes |
+| Safe for shared branches | Usually yes | Generally avoid on shared branches | Generally avoid on shared branches | Risky on shared branches |
+
+## 7. Which Command Should We Use?
+
+- **Use `git revert`** when a commit has already been pushed and you want to undo its changes without rewriting shared history.
+- **Use `git reset --soft`** when you want to undo a local commit but keep all its changes staged.
+- **Use `git reset --mixed`** when you want to undo a local commit while keeping its changes unstaged.
+- **Use `git reset --hard`** when you intentionally want to discard changes and return to a previous commit.
+
+## 8. Important Note About Pushed Commits
+
+When working with other developers, avoid resetting commits that have already been pushed and shared, because rewriting history can cause problems for collaborators.
+
+If you need to undo a change on a shared branch, `git revert` is usually the better choice.
+
+For local commits that have not been pushed, `git reset` can be useful when you need to change your commit history.
+
+## Conclusion
+
+Both `git revert` and `git reset` are useful Git commands, but they serve different purposes.
+
+- `git revert` undoes changes by creating a new commit and preserves the existing commit history.
+- `git reset --soft` moves the branch pointer while keeping changes staged.
+- `git reset --mixed` moves the branch pointer and keeps changes unstaged.
+- `git reset --hard` moves the branch pointer and discards affected working-directory changes.
+
+Understanding these commands helps us manage Git history, recover from mistakes, and collaborate more safely.
+
 ## 9. Git Restore
 
 The `git restore` command is used to discard changes in files or restore files from a particular commit. It helps us recover a file's content or remove unwanted changes.

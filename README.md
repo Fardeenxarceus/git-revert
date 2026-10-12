@@ -1,4 +1,4 @@
-# Git Revert and Git Reset
+# Git Revert, Git Restore and Git Reset
 
 This repository is created to understand the difference between the `git revert` and `git reset` commands in Git.
 
